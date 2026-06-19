@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── ENUMS ────────────────────────────────────────────────────────────────────
+
+enum PledgeStatus {
+  PENDING_ACCEPTANCE
+  AWAITING_FUNDING
+  ACTIVE
+  OVERDUE
+  COMPLETED
+  CANCELLED
+  EXPIRED
+}
+
+enum ReminderPreference {
+  LIGHT
+  STANDARD
+  STRICT
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESSFUL
+  FAILED
+}
+
+enum NotificationType {
+  PLEDGE_RECEIVED
+  PLEDGE_ACCEPTED
+  FUNDING_CONFIRMED
+  REMINDER
+  PAYMENT_RECEIVED
+  PLEDGE_COMPLETED
+  PLEDGE_OVERDUE
+}
+
+enum ActivityEventType {
+  PLEDGE_CREATED
+  PLEDGE_ACCEPTED
+  FUNDING_CONFIRMED
+  REMINDER_SENT
+  PAYMENT_RECEIVED
+  PLEDGE_COMPLETED
+  PLEDGE_OVERDUE
+  PLEDGE_CANCELLED
+  PLEDGE_EXPIRED
+}
+
+// ─── MODELS ───────────────────────────────────────────────────────────────────
+
+model User {
+  id              String   @id @default(cuid())
+  fullName        String
+  email           String   @unique
+  phoneNumber     String   @unique
+  passwordHash    String
+  bankName        String?
+  accountNumber   String?
+  accountName     String?
+  reputationScore Int      @default(50)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  pledgesAsLender   Pledge[]       @relation("LenderPledges")
+  pledgesAsBorrower Pledge[]       @relation("BorrowerPledges")
+  notifications     Notification[]
+  activities        Activity[]
+
+  @@map("users")
+}
+
+model Pledge {
+  id                 String            @id @default(cuid())
+  shareToken         String            @unique @default(cuid())
+  lenderId           String
+  borrowerId         String?
+  borrowerName       String
+  borrowerEmail      String
+  borrowerPhone      String
+  amount             Int
+  outstandingBalance Int
+  purpose            String
+  dueDate            DateTime
+  status             PledgeStatus      @default(PENDING_ACCEPTANCE)
+  reminderPreference ReminderPreference @default(STANDARD)
+  proofOfFundingUrl  String?
+  createdAt          DateTime          @default(now())
+  acceptedAt         DateTime?
+  fundedAt           DateTime?
+  completedAt        DateTime?
+  updatedAt          DateTime          @updatedAt
+
+  lender     User       @relation("LenderPledges", fields: [lenderId], references: [id])
+  borrower   User?      @relation("BorrowerPledges", fields: [borrowerId], references: [id])
+  payments   Payment[]
+  activities Activity[]
+
+  @@index([lenderId])
+  @@index([borrowerId])
+  @@index([status])
+  @@index([shareToken])
+  @@map("pledges")
+}
+
+model Payment {
+  id                       String        @id @default(cuid())
+  pledgeId                 String
+  amount                   Int
+  flutterwaveTransactionId String        @unique
+  flutterwaveRef           String?
+  status                   PaymentStatus @default(PENDING)
+  paidAt                   DateTime?
+  createdAt                DateTime      @default(now())
+
+  pledge Pledge @relation(fields: [pledgeId], references: [id])
+
+  @@index([pledgeId])
+  @@index([flutterwaveTransactionId])
+  @@map("payments")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, read])
+  @@map("notifications")
+}
+
+model Activity {
+  id        String            @id @default(cuid())
+  pledgeId  String
+  actorId   String?
+  eventType ActivityEventType
+  metadata  Json?
+  createdAt DateTime          @default(now())
+
+  pledge Pledge @relation(fields: [pledgeId], references: [id])
+  actor  User?  @relation(fields: [actorId], references: [id])
+
+  @@index([pledgeId])
+  @@map("activities")
+}

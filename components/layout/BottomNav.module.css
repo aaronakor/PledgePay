@@ -1,0 +1,106 @@
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-2) var(--space-6) 0;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px));
+  z-index: 50;
+  height: 64px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding-top: 10px;
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-1) var(--space-3);
+  min-height: 44px;
+  min-width: 44px;
+  color: var(--color-ink-faint);
+  transition: color 0.15s ease;
+}
+
+.tab:hover {
+  color: var(--color-ink-muted);
+}
+
+.tabActive {
+  color: var(--color-primary-700);
+}
+
+.tabActive:hover {
+  color: var(--color-primary-700);
+}
+
+.tabIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.tabLabel {
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.fab {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 51;
+  padding: 0;
+}
+
+.fabCircle {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(13, 124, 110, 0.4);
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fab:hover .fabCircle {
+  background: var(--color-primary-800);
+  box-shadow: 0 6px 20px rgba(13, 124, 110, 0.5);
+}
+
+.fab:active .fabCircle {
+  background: var(--color-primary-900);
+}
+
+.fabIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-white);
+}
+
+.fabLabel {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-primary-700);
+  white-space: nowrap;
+}
