@@ -13,6 +13,7 @@ export default withAuth({
         '/api/auth',
         '/api/webhooks',
         '/api/cron',
+        '/api/pledges/public',
         '/pledge',
       ]
 

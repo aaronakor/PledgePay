@@ -20,6 +20,7 @@ export default function PledgeDetailPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [shareUrl, setShareUrl] = useState('')
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     async function fetchPledge() {
@@ -140,12 +141,20 @@ export default function PledgeDetailPage() {
                 size="sm"
                 onClick={() => {
                   navigator.clipboard.writeText(shareUrl)
+                  setCopied(true)
+                  setTimeout(() => setCopied(false), 2000)
                 }}
               >
                 <ExternalLink className="w-4 h-4" />
                 Copy
               </Button>
             </div>
+          </div>
+        )}
+
+        {copied && (
+          <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-ink text-white text-sm font-medium px-5 py-3 rounded-xl shadow-lg animate-[fadeIn_0.2s_ease-out]">
+            Link copied to clipboard
           </div>
         )}
 

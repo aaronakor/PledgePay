@@ -1,6 +1,7 @@
 'use client'
 
-import { Bell, CheckCircle, Wallet } from 'lucide-react'
+import { Bell, Wallet, CheckCircle } from 'lucide-react'
+import { HandshakeIllustration } from '@/components/HandshakeIllustration'
 import styles from './Activity.module.css'
 
 const placeholders = [
@@ -25,8 +26,8 @@ export default function ActivityPage() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <div className={styles.illustration}>
-          <Bell className={styles.illustrationIcon} />
+        <div className={styles.illustrationWrap}>
+          <HandshakeIllustration />
         </div>
         <h1 className={styles.headline}>No activity yet</h1>
         <p className={styles.body}>
@@ -35,20 +36,21 @@ export default function ActivityPage() {
         </p>
       </div>
 
-      <div className={styles.placeholderSection}>
-        <h2 className={styles.placeholderTitle}>Upcoming</h2>
-        {placeholders.map((item) => {
+      <div className={styles.timelinePreview}>
+        {placeholders.map((item, index) => {
           const Icon = item.icon
+          const isLast = index === placeholders.length - 1
           return (
-            <div key={item.title} className={styles.placeholderCard}>
-              <div className={styles.placeholderIconWrap}>
-                <Icon className={styles.placeholderIcon} />
+            <div key={item.title} className={styles.timelineItem}>
+              {!isLast && <div className={styles.connector} />}
+              <div className={styles.timelineIconWrap}>
+                <Icon className={styles.timelineIcon} />
               </div>
-              <div className={styles.placeholderBody}>
-                <span className={styles.placeholderCardTitle}>
+              <div className={styles.timelineBody}>
+                <span className={styles.timelineTitle}>
                   {item.title}
                 </span>
-                <p className={styles.placeholderCardDesc}>
+                <p className={styles.timelineDesc}>
                   {item.description}
                 </p>
               </div>

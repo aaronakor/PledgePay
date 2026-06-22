@@ -9,19 +9,18 @@ export function TrustScoreCard({ score }: TrustScoreCardProps) {
   return (
     <div className={styles.card}>
       <div className={styles.topRow}>
-        <div className={styles.topLeft}>
-          <div className={styles.shieldWrap}>
-            <ShieldCheck className={styles.shieldIcon} />
-          </div>
-          <div className={styles.scoreArea}>
-            <span className={styles.scoreLabel}>Trust Score</span>
-            <span className={styles.scoreValue}>{score}</span>
-          </div>
+        <div className={styles.shieldWrap}>
+          <ShieldCheck className={styles.shieldIcon} />
         </div>
         <div className={styles.journeyBadge}>
           <span className={styles.journeyDot} />
           Beginning Journey
         </div>
+      </div>
+
+      <div className={styles.scoreSection}>
+        <span className={styles.scoreValue}>{score}</span>
+        <span className={styles.scoreLabel}>Trust Score</span>
       </div>
 
       <div className={styles.pillRow}>

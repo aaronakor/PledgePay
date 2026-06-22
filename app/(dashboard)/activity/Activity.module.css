@@ -4,7 +4,7 @@
   gap: var(--space-6);
   padding-bottom: 96px;
   animation: fade-in-up 0.35s ease-out;
-  padding-top: var(--space-8);
+  padding-top: var(--space-6);
 }
 
 .header {
@@ -15,20 +15,9 @@
   text-align: center;
 }
 
-.illustration {
-  width: 120px;
-  height: 120px;
-  border-radius: var(--radius-full);
-  background: var(--color-primary-50);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.illustrationIcon {
-  width: 56px;
-  height: 56px;
-  color: var(--color-primary-500);
+.illustrationWrap {
+  width: 160px;
+  height: 160px;
 }
 
 .headline {
@@ -47,31 +36,33 @@
   max-width: 320px;
 }
 
-.placeholderSection {
+.timelinePreview {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: 0;
+  padding: var(--space-4) var(--space-2);
 }
 
-.placeholderTitle {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-size: var(--text-lg);
-  color: var(--color-ink);
-  margin: 0;
-}
-
-.placeholderCard {
+.timelineItem {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-3);
-  background: var(--color-white);
-  border-radius: var(--radius-lg);
-  padding: var(--space-3) var(--space-4);
-  opacity: 0.45;
-  border: 1px solid var(--color-border);
+  position: relative;
+  opacity: 0.35;
+  padding-bottom: var(--space-6);
 }
 
-.placeholderIconWrap {
+.connector {
+  position: absolute;
+  left: 18px;
+  top: 32px;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-border);
+  content: '';
+}
+
+.timelineIconWrap {
   width: 36px;
   height: 36px;
   border-radius: var(--radius-full);
@@ -80,30 +71,34 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
-.placeholderIcon {
+.timelineIcon {
   width: 16px;
   height: 16px;
   color: var(--color-ink-faint);
 }
 
-.placeholderBody {
+.timelineBody {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  padding-top: 6px;
 }
 
-.placeholderCardTitle {
+.timelineTitle {
   font-size: var(--text-sm);
   font-weight: 600;
   color: var(--color-ink);
 }
 
-.placeholderCardDesc {
+.timelineDesc {
   font-size: var(--text-xs);
   color: var(--color-ink-faint);
   margin: 0;
+  line-height: 1.4;
 }
 
 @keyframes fade-in-up {

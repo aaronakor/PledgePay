@@ -2,9 +2,10 @@
 
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { Handshake, Plus, ArrowRight } from 'lucide-react'
+import { Plus, ArrowRight } from 'lucide-react'
 import { TrustScoreCard } from '@/components/home/TrustScoreCard'
 import { TrustTipCard } from '@/components/home/TrustTipCard'
+import { HandshakeIllustration } from '@/components/HandshakeIllustration'
 import styles from './Home.module.css'
 
 export default function HomePage() {
@@ -40,8 +41,8 @@ export default function HomePage() {
       </section>
 
       <section className={styles.mainEmpty}>
-        <div className={styles.illustration}>
-          <Handshake className={styles.illustrationIcon} />
+        <div className={styles.illustrationWrap}>
+          <HandshakeIllustration />
         </div>
         <h2 className={styles.headline}>
           Start building trust, one promise at a time.

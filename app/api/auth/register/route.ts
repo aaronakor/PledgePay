@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const validated = RegisterSchema.parse(body)
+    validated.email = validated.email.toLowerCase()
 
     const existingUser = await prisma.user.findFirst({
       where: {

@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname, useRouter } from 'next/navigation'
-import { Home, Folder, Clock, User, Plus } from 'lucide-react'
+import { Home, Folder, Clock, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import styles from './BottomNav.module.css'
 
@@ -18,17 +18,6 @@ export function BottomNav() {
 
   return (
     <nav className={styles.nav}>
-      <button
-        onClick={() => router.push('/pledges/new')}
-        className={styles.fab}
-        aria-label="New Pledge"
-      >
-        <div className={styles.fabCircle}>
-          <Plus className={styles.fabIcon} />
-        </div>
-        <span className={styles.fabLabel}>New Pledge</span>
-      </button>
-
       <div className={styles.tabs}>
         {tabs.map((tab) => {
           const isActive = pathname.startsWith(tab.href)
