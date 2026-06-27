@@ -16,7 +16,6 @@ export function FloatingNewPledge() {
       >
         <Plus className={styles.icon} />
       </button>
-      <span className={styles.label}>New Pledge</span>
     </div>
   )
 }

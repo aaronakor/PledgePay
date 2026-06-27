@@ -63,14 +63,23 @@ export function OnboardingWizard() {
     )
   }
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
-      <div className="max-w-sm w-full">
-        <div className="flex flex-col gap-2 mb-8 text-center">
-          <span className="text-xl text-primary font-serif">PledgePay</span>
-        </div>
+  const isWelcomeStep = step === 0
 
-        <div className="flex items-center justify-center gap-1.5 mb-8">
+  return (
+    <div
+      className="min-h-screen flex flex-col items-center justify-center px-6 py-8 transition-colors duration-500"
+      style={{ backgroundColor: isWelcomeStep ? '#FBEADB' : 'var(--color-surface)' }}
+    >
+      <div className="max-w-sm w-full">
+        {/* Header — hide PledgePay title on welcome step since it's in the image */}
+        {!isWelcomeStep && (
+          <div className="flex flex-col gap-2 mb-8 text-center">
+            <span className="text-xl text-primary font-serif">PledgePay</span>
+          </div>
+        )}
+
+        {/* Progress dots — always visible */}
+        <div className={`flex items-center justify-center gap-1.5 ${isWelcomeStep ? 'mb-4' : 'mb-8'}`}>
           {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
             <div
               key={i}
@@ -83,6 +92,7 @@ export function OnboardingWizard() {
           ))}
         </div>
 
+        {/* Step content */}
         <div className="relative overflow-hidden">
           <div
             key={animKey}
@@ -108,7 +118,8 @@ export function OnboardingWizard() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-8">
+        {/* Navigation */}
+        <div className="flex items-center justify-between mt-6">
           {step > 0 ? (
             <button
               onClick={goBack}

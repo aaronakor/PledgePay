@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { Plus, ArrowRight } from 'lucide-react'
+import { Plus, ArrowRight, Bell } from 'lucide-react'
 import { TrustScoreCard } from '@/components/home/TrustScoreCard'
 import { TrustTipCard } from '@/components/home/TrustTipCard'
 import { HandshakeIllustration } from '@/components/HandshakeIllustration'
@@ -13,13 +13,6 @@ export default function HomePage() {
   const router = useRouter()
   const firstName = session?.user?.name?.split(' ')[0] ?? 'there'
 
-  const initials = session?.user?.name
-    ?.split(' ')
-    .map((n) => n[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase() ?? '?'
-
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -28,11 +21,13 @@ export default function HomePage() {
           <p className={styles.subtitle}>Keep promises. Build trust.</p>
         </div>
         <button
-          onClick={() => router.push('/profile')}
+          onClick={() => router.push('/notifications')}
           className={styles.avatarButton}
-          aria-label="Profile"
+          aria-label="Notifications"
         >
-          <div className={styles.avatar}>{initials}</div>
+          <div className={styles.avatar}>
+            <Bell className="w-5 h-5" />
+          </div>
         </button>
       </header>
 

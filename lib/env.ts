@@ -1,14 +1,22 @@
+function requireEnv(key: string): string {
+  const value = process.env[key]
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${key}`)
+  }
+  return value
+}
+
 export const env = {
-  databaseUrl: process.env.DATABASE_URL!,
-  nextauthSecret: process.env.NEXTAUTH_SECRET!,
-  nextauthUrl: process.env.NEXTAUTH_URL!,
-  flutterwavePublicKey: process.env.NEXT_PUBLIC_FLW_PUBLIC_KEY!,
-  flutterwaveSecretKey: process.env.FLW_SECRET_KEY!,
-  flutterwaveWebhookSecret: process.env.FLW_WEBHOOK_SECRET!,
-  gmailUser: process.env.GMAIL_USER!,
-  gmailAppPassword: process.env.GMAIL_APP_PASSWORD!,
-  emailFrom: process.env.EMAIL_FROM!,
-  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  appUrl: process.env.NEXT_PUBLIC_APP_URL!,
+  databaseUrl: requireEnv('DATABASE_URL'),
+  nextauthSecret: requireEnv('NEXTAUTH_SECRET'),
+  nextauthUrl: requireEnv('NEXTAUTH_URL'),
+  flutterwavePublicKey: requireEnv('NEXT_PUBLIC_FLW_PUBLIC_KEY'),
+  flutterwaveSecretKey: requireEnv('FLW_SECRET_KEY'),
+  flutterwaveWebhookSecret: requireEnv('FLW_WEBHOOK_SECRET'),
+  gmailUser: requireEnv('GMAIL_USER'),
+  gmailAppPassword: requireEnv('GMAIL_APP_PASSWORD'),
+  emailFrom: requireEnv('EMAIL_FROM'),
+  supabaseUrl: requireEnv('NEXT_PUBLIC_SUPABASE_URL'),
+  supabaseServiceRoleKey: requireEnv('SUPABASE_SERVICE_ROLE_KEY'),
+  appUrl: requireEnv('NEXT_PUBLIC_APP_URL'),
 }
