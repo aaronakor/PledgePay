@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Settings } from 'lucide-react'
 import Link from 'next/link'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -107,9 +107,18 @@ export default function ProfilePage() {
       {profile && <ProfileReputationCard score={profile.reputationScore} />}
 
       <Card>
-        <h2 className="text-base font-semibold text-ink mb-4">
-          Bank Details
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-semibold text-ink">
+            Bank Details
+          </h2>
+          <Link
+            href="/settings"
+            className="text-ink-muted hover:text-primary-700 transition-colors"
+            aria-label="Settings"
+          >
+            <Settings className="w-5 h-5" />
+          </Link>
+        </div>
         <p className="text-xs text-ink-muted mb-4">
           This is where repayments will be sent. Only you can see this
           information.

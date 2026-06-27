@@ -168,14 +168,9 @@ export default function CreatePledgePage() {
         >
           <ArrowLeft size={20} />
         </button>
-        <h1 className={styles.topBarTitle}>Create Pledge</h1>
-        <button
-          className={styles.closeButton}
-          onClick={() => router.push('/home')}
-          aria-label="Close"
-        >
-          <X size={20} />
-        </button>
+        <div className={styles.topBarCenter}>
+          <h1 className={styles.topBarTitle}>Create Pledge</h1>
+        </div>
       </header>
 
       {/* ── Progress stepper ── */}

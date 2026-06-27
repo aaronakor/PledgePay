@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Plus, ArrowRight, Bell } from 'lucide-react'
 import { TrustScoreCard } from '@/components/home/TrustScoreCard'
 import { TrustTipCard } from '@/components/home/TrustTipCard'
-import { HandshakeIllustration } from '@/components/HandshakeIllustration'
+import { PledgeEmptyIllustration } from '@/components/PledgeEmptyIllustration'
 import styles from './Home.module.css'
 
 export default function HomePage() {
@@ -36,9 +36,7 @@ export default function HomePage() {
       </section>
 
       <section className={styles.mainEmpty}>
-        <div className={styles.illustrationWrap}>
-          <HandshakeIllustration />
-        </div>
+        <PledgeEmptyIllustration />
         <h2 className={styles.headline}>
           Start building trust, one promise at a time.
         </h2>
@@ -54,7 +52,10 @@ export default function HomePage() {
             <Plus className="w-5 h-5" />
             Create First Pledge
           </button>
-          <button className={styles.secondaryButton}>
+          <button
+            className={styles.secondaryButton}
+            onClick={() => router.push('/how-it-works')}
+          >
             <ArrowRight className="w-5 h-5" />
             How PledgePay Works
           </button>

@@ -1,7 +1,6 @@
 'use client'
 
 import { Bell, Wallet, CheckCircle } from 'lucide-react'
-import { HandshakeIllustration } from '@/components/HandshakeIllustration'
 import styles from './Activity.module.css'
 
 const placeholders = [
@@ -26,9 +25,6 @@ export default function ActivityPage() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <div className={styles.illustrationWrap}>
-          <HandshakeIllustration />
-        </div>
         <h1 className={styles.headline}>No activity yet</h1>
         <p className={styles.body}>
           Payments, reminders, accepted pledges, and completed commitments will
