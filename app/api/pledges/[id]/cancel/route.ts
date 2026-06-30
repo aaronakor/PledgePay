@@ -5,8 +5,9 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   const session = await getServerSession(authOptions)
   if (!session?.user) {
     return Response.json({ error: 'Unauthorised' }, { status: 401 })
@@ -14,7 +15,7 @@ export async function POST(
 
   try {
     const pledge = await prisma.pledge.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!pledge) {
@@ -33,14 +34,14 @@ export async function POST(
     }
 
     const updatedPledge = await prisma.pledge.update({
-      where: { id: params.id },
+      where: { id },
       data: { status: 'CANCELLED' },
       select: { id: true, status: true },
     })
 
     await prisma.activity.create({
       data: {
-        pledgeId: params.id,
+        pledgeId: id,
         actorId: session.user.id,
         eventType: 'PLEDGE_CANCELLED',
       },

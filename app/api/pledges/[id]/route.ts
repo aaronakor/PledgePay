@@ -5,8 +5,9 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   const session = await getServerSession(authOptions)
   if (!session?.user) {
     return Response.json({ error: 'Unauthorised' }, { status: 401 })
@@ -14,7 +15,7 @@ export async function GET(
 
   try {
     const pledge = await prisma.pledge.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         lender: {
           select: { id: true, fullName: true, email: true },

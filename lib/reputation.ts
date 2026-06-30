@@ -58,14 +58,6 @@ export async function getReputationProfile(userId: string) {
     },
   })
 
-  const onTimeCount = await prisma.pledge.count({
-    where: {
-      borrowerId: userId,
-      status: 'COMPLETED',
-      completedAt: { lte: undefined },
-    },
-  })
-
   const activeOverdue = await prisma.pledge.count({
     where: {
       borrowerId: userId,
@@ -75,7 +67,7 @@ export async function getReputationProfile(userId: string) {
 
   const onTimeRate =
     totalCompleted > 0
-      ? Math.round((onTimeCount / totalCompleted) * 100)
+      ? Math.round((completedPledges / totalCompleted) * 100)
       : 0
 
   return {

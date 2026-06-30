@@ -11,7 +11,7 @@ export async function createPledge(
     data: {
       lenderId,
       borrowerName: data.borrowerName,
-      borrowerEmail: data.borrowerEmail,
+      borrowerEmail: data.borrowerEmail || '',
       borrowerPhone: data.borrowerPhone,
       amount: amountInKobo,
       outstandingBalance: amountInKobo,

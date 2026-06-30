@@ -3,11 +3,12 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
+  const { token } = await params
   try {
     const pledge = await prisma.pledge.findUnique({
-      where: { shareToken: params.token },
+      where: { shareToken: token },
       select: {
         id: true,
         amount: true,

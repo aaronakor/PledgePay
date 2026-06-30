@@ -5,8 +5,9 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
+  const { token } = await params
   const session = await getServerSession(authOptions)
   if (!session?.user) {
     return Response.json({ error: 'Unauthorised' }, { status: 401 })
@@ -14,7 +15,7 @@ export async function POST(
 
   try {
     const pledge = await prisma.pledge.findUnique({
-      where: { shareToken: params.token },
+      where: { shareToken: token },
     })
 
     if (!pledge) {

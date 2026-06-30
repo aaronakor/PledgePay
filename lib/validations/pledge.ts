@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const CreatePledgeSchema = z.object({
   borrowerName: z.string().min(2, 'Name must be at least 2 characters'),
-  borrowerEmail: z.string().email('Enter a valid email address'),
+  borrowerEmail: z.string().email('Enter a valid email address').optional().or(z.literal('')),
   borrowerPhone: z
     .string()
     .min(11, 'Enter a valid Nigerian phone number'),

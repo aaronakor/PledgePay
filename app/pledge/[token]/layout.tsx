@@ -1,9 +1,5 @@
 import type { Metadata } from 'next'
 
-interface Props {
-  params: { token: string }
-}
-
 async function getPledge(token: string) {
   try {
     const origin = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
@@ -17,8 +13,9 @@ async function getPledge(token: string) {
   }
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const pledge = await getPledge(params.token)
+export async function generateMetadata({ params }: { params: Promise<{ token: string }> }): Promise<Metadata> {
+  const { token } = await params
+  const pledge = await getPledge(token)
 
   if (!pledge) {
     return {
