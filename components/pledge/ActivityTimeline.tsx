@@ -99,7 +99,7 @@ export function ActivityTimeline({ events }: ActivityTimelineProps) {
             </div>
             <div className="flex flex-col gap-0.5 pt-1.5">
               <p className="text-sm font-medium text-ink">{config.label}</p>
-              {event.metadata?.amount && (
+              {!!event.metadata?.amount && (
                 <p className="text-sm text-ink-muted">
                   ₦
                   {Number(event.metadata.amount).toLocaleString('en-NG')}
