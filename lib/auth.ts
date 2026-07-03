@@ -18,11 +18,16 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
+        console.log("[AUTH] email:", credentials.email)
+
         const email = credentials.email.toLowerCase()
+        console.log("[AUTH] normalized:", email)
 
         const user = await prisma.user.findUnique({
           where: { email },
         })
+        console.log("[AUTH] user found:", !!user)
+        console.log("[AUTH] hash:", user?.passwordHash?.slice(0, 15))
 
         if (!user) return null
 
@@ -30,6 +35,8 @@ export const authOptions: NextAuthOptions = {
           credentials.password,
           user.passwordHash
         )
+        console.log("[AUTH] password valid:", isValid)
+        
         if (!isValid) return null
 
         return {
