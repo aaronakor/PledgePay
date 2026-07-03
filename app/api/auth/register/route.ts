@@ -80,17 +80,15 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       )
     }
-    console.error('========== REGISTER ERROR ==========')
-    console.error(error)
+    console.error('[POST /api/auth/register]', error)
 
-    if (error instanceof Error) {
-      console.error('Message:', error.message)
-      console.error('Stack:', error.stack)
-    }
-
-    console.error('====================================')
     return Response.json(
-      { error: 'Something went wrong. Please try again.' },
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : JSON.stringify(error),
+      },
       { status: 500 }
     )
   }
