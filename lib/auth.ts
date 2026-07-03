@@ -14,30 +14,36 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        console.log("[AUTH] Login attempt");
+
+        console.log("[AUTH] Received email:", credentials?.email);
+
         if (!credentials?.email || !credentials?.password) {
-          return null
+           return null;
         }
 
-        console.log("[AUTH] email:", credentials.email)
+        const email = credentials.email.toLowerCase();
 
-        const email = credentials.email.toLowerCase()
-        console.log("[AUTH] normalized:", email)
+        console.log("[AUTH] Normalized email:", email);
 
         const user = await prisma.user.findUnique({
           where: { email },
-        })
-        console.log("[AUTH] user found:", !!user)
-        console.log("[AUTH] hash:", user?.passwordHash?.slice(0, 15))
+        });
 
-        if (!user) return null
+        console.log("[AUTH] User found:", !!user);
 
-        const isValid = await bcrypt.compare(
-          credentials.password,
-          user.passwordHash
-        )
-        console.log("[AUTH] password valid:", isValid)
-        
-        if (!isValid) return null
+        if (user) {
+          console.log("[AUTH] User id:", user.id);
+          console.log("[AUTH] Password hash starts with:", user.passwordHash.slice(0, 10));
+        }
+
+        const isValid = user
+          ? await bcrypt.compare(credentials.password, user.passwordHash)
+          : false;
+
+        console.log("[AUTH] Password valid:", isValid);
+
+        if (!isValid || !user) return null
 
         return {
           id: user.id,
