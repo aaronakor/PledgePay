@@ -39,6 +39,13 @@ export async function POST(req: NextRequest) {
 
     const passwordHash = await bcrypt.hash(validated.password, 12)
 
+    console.log('========== REGISTER START ==========')
+    console.log('Creating user with:', {
+      fullName: validated.fullName,
+      email: validated.email,
+      phoneNumber: validated.phoneNumber,
+    })
+
     const user = await prisma.user.create({
       data: {
         fullName: validated.fullName,
@@ -54,12 +61,17 @@ export async function POST(req: NextRequest) {
       },
     })
 
+    console.log('User successfully created:')
+    console.log(user)
+
     sendEmail({
       to: validated.email,
       subject: 'Welcome to PledgePay',
       html: welcomeTemplate({ fullName: validated.fullName, appUrl: env.appUrl }),
     }).catch((err) => console.error('[WELCOME EMAIL]', err))
 
+    console.log('Returning success response.')
+    console.log('========== REGISTER END ==========')
     return Response.json(user, { status: 201 })
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -68,7 +80,15 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       )
     }
-    console.error('[POST /api/auth/register]', error)
+    console.error('========== REGISTER ERROR ==========')
+    console.error(error)
+
+    if (error instanceof Error) {
+      console.error('Message:', error.message)
+      console.error('Stack:', error.stack)
+    }
+
+    console.error('====================================')
     return Response.json(
       { error: 'Something went wrong. Please try again.' },
       { status: 500 }

@@ -66,21 +66,45 @@ function AuthForm() {
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, email, phoneNumber, password }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName,
+          email,
+          phoneNumber,
+          password,
+        }),
       })
 
-      const data = await res.json()
+      let data = null
+
+      try {
+        data = await res.json()
+      } catch (err) {
+        console.error('Could not parse API response as JSON.')
+        console.error(err)
+      }
+
+      console.log('Registration Response Status:', res.status)
+      console.log('Registration Response Body:', data)
 
       if (!res.ok) {
-        setError(data.error || 'Registration failed.')
+        setError(data?.error || `Request failed (${res.status})`)
         return
       }
 
       setMode('login')
       setError(null)
-    } catch {
-      setError('Something went wrong. Please try again.')
+    } catch (err) {
+      console.error('Registration request failed:')
+      console.error(err)
+
+      if (err instanceof Error) {
+        setError(err.message)
+      } else {
+        setError('Something went wrong.')
+      }
     } finally {
       setLoading(false)
     }
