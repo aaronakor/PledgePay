@@ -114,9 +114,16 @@ export default function OnboardingPage() {
         redirect: false,
       })
 
+      console.log("[LOGIN RESULT]", result);
+
       if (result?.error) {
-        setError('Invalid email or password.')
-        return
+        console.error("[LOGIN ERROR]", result);
+      
+        setError(
+          result.error || "Invalid email or password."
+        );
+      
+        return;
       }
 
       router.push('/home')
