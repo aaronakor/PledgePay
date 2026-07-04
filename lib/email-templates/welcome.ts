@@ -47,7 +47,7 @@ export function welcomeTemplateHTML({
         </table>
       `)}
 
-      ${emailButton('Go to Dashboard', `${appUrl}/dashboard`)}
+      ${emailButton('Continue to PledgePay', `${appUrl}`)}
     `)}
 
     <tr>
@@ -106,7 +106,7 @@ Now you can:
 - Build your trust reputation
 - Stay accountable without awkward reminders
 
-Go to Dashboard: ${appUrl}/dashboard
+Continue to PledgePay: ${appUrl}
 
 What's next?
 1. Complete your profile

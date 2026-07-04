@@ -5,8 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { SuccessScreen } from '@/components/onboarding/SuccessScreen'
 
-type Mode = 'register' | 'login'
+type Mode = 'register' | 'login' | 'success'
 
 function AuthForm() {
   const router = useRouter()
@@ -94,7 +95,7 @@ function AuthForm() {
         return
       }
 
-      setMode('login')
+      setMode('success')
       setError(null)
     } catch (err) {
       console.error('Registration request failed:')
@@ -127,12 +128,26 @@ function AuthForm() {
         return
       }
 
-      router.push('/home')
+      const sessionRes = await fetch('/api/auth/session')
+      const sessionData = await sessionRes.json()
+      const userData = sessionData?.user ?? {}
+      const profileComplete = userData.profileComplete ?? true
+      const firstLogin = userData.firstLogin ?? false
+
+      if (!profileComplete && firstLogin) {
+        router.push('/complete-profile')
+      } else {
+        router.push('/home')
+      }
     } catch {
       setError('Something went wrong. Please try again.')
     } finally {
       setLoading(false)
     }
+  }
+
+  if (mode === 'success') {
+    return <SuccessScreen email={email} onContinue={() => setMode('login')} />
   }
 
   return (

@@ -8,14 +8,17 @@ import { PledgeCard } from '@/components/pledge/PledgeCard'
 import { PledgeCardSkeleton } from '@/components/pledge/PledgeCardSkeleton'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Button } from '@/components/ui/Button'
+import { DashboardWelcome } from '@/components/onboarding/DashboardWelcome'
+import { ProfileReminderCard } from '@/components/onboarding/ProfileReminderCard'
 import type { PledgeSummary } from '@/types'
 
 export default function DashboardPage() {
   const router = useRouter()
-  const { data: session, status } = useSession()
+  const { data: session, status, update } = useSession()
   const [pledges, setPledges] = useState<PledgeSummary[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [welcomeDismissed, setWelcomeDismissed] = useState(false)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -39,6 +42,12 @@ export default function DashboardPage() {
     fetchPledges()
   }, [status, router])
 
+  async function handleWelcomeDismiss() {
+    await fetch('/api/onboarding', { method: 'PATCH' })
+    update()
+    setWelcomeDismissed(true)
+  }
+
   if (status === 'loading' || loading) {
     return (
       <div className="flex flex-col gap-4">
@@ -54,8 +63,21 @@ export default function DashboardPage() {
     )
   }
 
+  const profileComplete = session?.user?.profileComplete ?? true
+  const firstLogin = session?.user?.firstLogin ?? false
+  const showWelcome = firstLogin && !welcomeDismissed
+
   return (
     <div className="flex flex-col gap-6">
+      {showWelcome && (
+        <DashboardWelcome
+          profileComplete={profileComplete}
+          onDismiss={handleWelcomeDismiss}
+        />
+      )}
+
+      {!profileComplete && !showWelcome && <ProfileReminderCard />}
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-serif text-ink">

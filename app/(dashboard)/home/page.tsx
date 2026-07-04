@@ -1,20 +1,49 @@
 'use client'
 
+import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Plus, ArrowRight, Bell } from 'lucide-react'
 import { TrustScoreCard } from '@/components/home/TrustScoreCard'
 import { TrustTipCard } from '@/components/home/TrustTipCard'
 import { PledgeEmptyIllustration } from '@/components/PledgeEmptyIllustration'
+import { DashboardWelcome } from '@/components/onboarding/DashboardWelcome'
+import { ProfileReminderCard } from '@/components/onboarding/ProfileReminderCard'
 import styles from './Home.module.css'
 
 export default function HomePage() {
-  const { data: session } = useSession()
+  const { data: session, update } = useSession()
   const router = useRouter()
   const firstName = session?.user?.name?.split(' ')[0] ?? 'there'
+  const [welcomeDismissed, setWelcomeDismissed] = useState(false)
+
+  const profileComplete = session?.user?.profileComplete ?? true
+  const firstLogin = session?.user?.firstLogin ?? false
+  const showWelcome = firstLogin && !welcomeDismissed
+
+  async function handleWelcomeDismiss() {
+    await fetch('/api/onboarding', { method: 'PATCH' })
+    update()
+    setWelcomeDismissed(true)
+  }
 
   return (
     <div className={styles.page}>
+      {showWelcome && (
+        <div className="px-4 pt-4">
+          <DashboardWelcome
+            profileComplete={profileComplete}
+            onDismiss={handleWelcomeDismiss}
+          />
+        </div>
+      )}
+
+      {!profileComplete && !showWelcome && (
+        <div className="px-4 pt-4">
+          <ProfileReminderCard />
+        </div>
+      )}
+
       <header className={styles.header}>
         <div className={styles.headerLeft}>
           <h1 className={styles.greeting}>Hello, {firstName} 👋</h1>

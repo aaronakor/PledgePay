@@ -6,8 +6,9 @@ import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { SuccessScreen } from '@/components/onboarding/SuccessScreen'
 
-type View = 'hero' | 'register' | 'login'
+type View = 'hero' | 'register' | 'login' | 'success'
 
 export default function OnboardingPage() {
   const router = useRouter()
@@ -86,7 +87,7 @@ export default function OnboardingPage() {
         return
       }
 
-      setView('login')
+      setView('success')
       setError(null)
     } catch (err) {
       console.error('Registration request failed:')
@@ -118,20 +119,34 @@ export default function OnboardingPage() {
 
       if (result?.error) {
         console.error("[LOGIN ERROR]", result);
-      
+
         setError(
           result.error || "Invalid email or password."
         );
-      
+
         return;
       }
 
-      router.push('/home')
+      const sessionRes = await fetch('/api/auth/session')
+      const sessionData = await sessionRes.json()
+      const userData = sessionData?.user ?? {}
+      const profileComplete = userData.profileComplete ?? true
+      const firstLogin = userData.firstLogin ?? false
+
+      if (!profileComplete && firstLogin) {
+        router.push('/complete-profile')
+      } else {
+        router.push('/home')
+      }
     } catch {
       setError('Something went wrong. Please try again.')
     } finally {
       setLoading(false)
     }
+  }
+
+  if (view === 'success') {
+    return <SuccessScreen email={email} onContinue={() => setView('login')} />
   }
 
   if (view !== 'hero') {

@@ -28,12 +28,26 @@ export async function GET() {
         accountNumber: true,
         accountName: true,
         reputationScore: true,
+        profileComplete: true,
         createdAt: true,
       },
     })
 
     if (!user) {
       return Response.json({ error: 'Not found' }, { status: 404 })
+    }
+
+    if (
+      !user.profileComplete &&
+      user.bankName &&
+      user.accountNumber &&
+      user.accountName
+    ) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { profileComplete: true },
+      })
+      user.profileComplete = true
     }
 
     return Response.json(user)
@@ -56,14 +70,21 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json()
     const validated = UpdateProfileSchema.parse(body)
 
+    const hasAllBankFields =
+      validated.bankName && validated.accountNumber && validated.accountName
+
     const user = await prisma.user.update({
       where: { id: session.user.id },
-      data: validated,
+      data: {
+        ...validated,
+        ...(hasAllBankFields ? { profileComplete: true } : {}),
+      },
       select: {
         id: true,
         bankName: true,
         accountNumber: true,
         accountName: true,
+        profileComplete: true,
       },
     })
 

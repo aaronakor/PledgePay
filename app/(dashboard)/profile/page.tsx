@@ -23,7 +23,7 @@ interface Profile {
 
 export default function ProfilePage() {
   const router = useRouter()
-  const { data: session } = useSession()
+  const { data: session, update } = useSession()
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -76,6 +76,7 @@ export default function ProfilePage() {
       }
 
       setSuccess('Bank details saved.')
+      await update()
     } catch {
       setError('Something went wrong.')
     } finally {

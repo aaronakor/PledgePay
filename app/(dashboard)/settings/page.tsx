@@ -1,7 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeft, Bell, Clock, LogOut } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, Bell, Clock, LogOut, CheckCircle, User } from 'lucide-react'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
 import { Card } from '@/components/ui/Card'
@@ -24,6 +26,10 @@ const reminderStyles = [
 ] as const
 
 export default function SettingsPage() {
+  const { data: session } = useSession()
+  const router = useRouter()
+  const profileComplete = session?.user?.profileComplete ?? true
+
   const [notifications, setNotifications] = useState<Record<string, boolean>>(
     () =>
       Object.fromEntries(
@@ -58,6 +64,46 @@ export default function SettingsPage() {
         </Link>
         <h1 className="text-2xl font-serif text-ink">Settings</h1>
       </div>
+
+      {profileComplete ? (
+        <Card>
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-success" />
+            <h2 className="text-base font-semibold text-ink">
+              Profile Complete
+            </h2>
+          </div>
+          <p className="text-xs text-ink-muted mt-1">
+            Your profile is set up and ready.
+          </p>
+          <Link
+            href="/profile"
+            className="text-sm text-primary font-medium mt-3 inline-block hover:underline"
+          >
+            Edit Bank Details
+          </Link>
+        </Card>
+      ) : (
+        <Card>
+          <div className="flex items-center gap-2 mb-3">
+            <User className="w-5 h-5 text-primary-700" />
+            <h2 className="text-base font-semibold text-ink">
+              Complete Your Profile
+            </h2>
+          </div>
+          <p className="text-xs text-ink-muted mb-4">
+            Adding your bank details helps people trust you and enables faster
+            repayments.
+          </p>
+          <Button
+            fullWidth
+            size="sm"
+            onClick={() => router.push('/complete-profile')}
+          >
+            Complete Profile
+          </Button>
+        </Card>
+      )}
 
       <Card>
         <div className="flex items-center gap-2 mb-4">

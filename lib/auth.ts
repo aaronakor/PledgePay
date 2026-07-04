@@ -48,6 +48,8 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.fullName,
+          profileComplete: user.profileComplete,
+          firstLogin: user.firstLogin,
         }
       },
     }),
@@ -57,15 +59,29 @@ export const authOptions: NextAuthOptions = {
     maxAge: 7 * 24 * 60 * 60,
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id
+        token.profileComplete = user.profileComplete
+        token.firstLogin = user.firstLogin
+      }
+      if (trigger === 'update') {
+        const freshUser = await prisma.user.findUnique({
+          where: { id: token.id },
+          select: { profileComplete: true, firstLogin: true },
+        })
+        if (freshUser) {
+          token.profileComplete = freshUser.profileComplete
+          token.firstLogin = freshUser.firstLogin
+        }
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string
+        session.user.profileComplete = token.profileComplete as boolean
+        session.user.firstLogin = token.firstLogin as boolean
       }
       return session
     },
