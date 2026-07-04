@@ -65,7 +65,13 @@ export async function POST(req: NextRequest) {
     console.log(user)
     console.log('[REGISTER] User created:', user.email)
 
-    console.log('[REGISTER] About to send welcome email')
+    console.log("[REGISTER] Preparing welcome email", {
+      to: validated.email,
+      gmailUser: process.env.GMAIL_USER,
+      emailFrom: process.env.EMAIL_FROM,
+    })
+
+    console.log("[REGISTER] Calling sendEmail")
     try {
       await sendEmail({
         to: validated.email,
@@ -75,20 +81,11 @@ export async function POST(req: NextRequest) {
           appUrl: env.appUrl,
         }),
       })
-
-      console.log('[REGISTER] Welcome email sent successfully')
-    } catch (err) {
-      console.error('[REGISTER] Welcome email failed:', err)
-
-      return Response.json(
-        {
-          error: 'Account created, but the welcome email could not be sent.',
-          emailError: String(err),
-        },
-        {
-          status: 500,
-        }
-      )
+      console.log("[REGISTER] sendEmail completed")
+      console.log("[REGISTER] Welcome email sent")
+    } catch (error) {
+      console.error("[REGISTER] sendEmail failed", error)
+      console.error("[REGISTER] Welcome email failed", error)
     }
 
     console.log('Returning success response.')

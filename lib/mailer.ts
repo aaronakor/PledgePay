@@ -8,17 +8,20 @@ interface SendEmailOptions {
 }
 
 function createTransporter() {
+  console.log("[MAILER] Creating transporter")
   if (!env.gmailUser || !env.gmailAppPassword) {
+    console.error("[MAILER] Gmail credentials missing")
     return null
   }
-  console.log('[MAILER] Creating transporter...')
-  return nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: env.gmailUser,
       pass: env.gmailAppPassword,
     },
   })
+  console.log("[MAILER] Transporter created")
+  return transporter
 }
 
 export async function sendEmail({
@@ -31,7 +34,7 @@ export async function sendEmail({
     console.warn('[mailer] Email not sent: Gmail credentials not configured.')
     return
   }
-  console.log('[MAILER] Sending email to:', to)
+  console.log("[MAILER] Sending email to", to)
   try {
     const info = await transporter.sendMail({
       from: env.emailFrom,
@@ -39,13 +42,13 @@ export async function sendEmail({
       subject,
       html,
     })
-    console.log('[MAILER] Email sent successfully')
+    console.log("[MAILER] Email successfully sent")
     console.log('[MAILER] Message ID:', info.messageId)
     console.log('[MAILER] Accepted:', info.accepted)
     console.log('[MAILER] Rejected:', info.rejected)
     console.log('[MAILER] Response:', info.response)
   } catch (error) {
-    console.error('[MAILER ERROR]', error)
+    console.error("[MAILER] Gmail send failed", error)
     throw error
   }
 }
