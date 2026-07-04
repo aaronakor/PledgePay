@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
       emailFrom: process.env.EMAIL_FROM,
     })
 
-    console.log("[REGISTER] Calling sendEmail")
+    console.log('[REGISTER] About to send welcome email to', validated.email)
     try {
       await sendEmail({
         to: validated.email,
@@ -81,11 +81,9 @@ export async function POST(req: NextRequest) {
           appUrl: env.appUrl,
         }),
       })
-      console.log("[REGISTER] sendEmail completed")
-      console.log("[REGISTER] Welcome email sent")
+      console.log('[REGISTER] Welcome email finished.')
     } catch (error) {
-      console.error("[REGISTER] sendEmail failed", error)
-      console.error("[REGISTER] Welcome email failed", error)
+      console.error('[REGISTER EMAIL ERROR]', error)
     }
 
     console.log('Returning success response.')
