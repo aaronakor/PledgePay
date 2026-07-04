@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { sendEmail } from '@/lib/mailer'
-import { welcomeTemplate } from '@/lib/email-templates/welcome'
+import { welcomeTemplateHTML, welcomeTemplateText } from '@/lib/email-templates/welcome'
 import { env } from '@/lib/env'
 
 const RegisterSchema = z.object({
@@ -76,7 +76,11 @@ export async function POST(req: NextRequest) {
       await sendEmail({
         to: validated.email,
         subject: 'Welcome to PledgePay',
-        html: welcomeTemplate({
+        html: welcomeTemplateHTML({
+          fullName: validated.fullName,
+          appUrl: env.appUrl,
+        }),
+        text: welcomeTemplateText({
           fullName: validated.fullName,
           appUrl: env.appUrl,
         }),

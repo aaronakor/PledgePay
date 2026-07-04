@@ -5,6 +5,7 @@ interface SendEmailOptions {
   to: string
   subject: string
   html: string
+  text?: string
 }
 
 function createTransporter() {
@@ -46,6 +47,7 @@ export async function sendEmail({
       to,
       subject,
       html,
+      text,
     })
     console.log('[MAILER] Email successfully sent.')
     console.log('[MAILER] Message ID:', info.messageId)
