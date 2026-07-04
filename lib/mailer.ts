@@ -32,6 +32,7 @@ export async function sendEmail({
   to,
   subject,
   html,
+  text,
 }: SendEmailOptions): Promise<void> {
   const transporter = createTransporter()
   if (!transporter) {
