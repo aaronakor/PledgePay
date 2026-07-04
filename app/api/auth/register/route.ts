@@ -63,12 +63,33 @@ export async function POST(req: NextRequest) {
 
     console.log('User successfully created:')
     console.log(user)
+    console.log('[REGISTER] User created:', user.email)
 
-    sendEmail({
-      to: validated.email,
-      subject: 'Welcome to PledgePay',
-      html: welcomeTemplate({ fullName: validated.fullName, appUrl: env.appUrl }),
-    }).catch((err) => console.error('[WELCOME EMAIL]', err))
+    console.log('[REGISTER] About to send welcome email')
+    try {
+      await sendEmail({
+        to: validated.email,
+        subject: 'Welcome to PledgePay',
+        html: welcomeTemplate({
+          fullName: validated.fullName,
+          appUrl: env.appUrl,
+        }),
+      })
+
+      console.log('[REGISTER] Welcome email sent successfully')
+    } catch (err) {
+      console.error('[REGISTER] Welcome email failed:', err)
+
+      return Response.json(
+        {
+          error: 'Account created, but the welcome email could not be sent.',
+          emailError: String(err),
+        },
+        {
+          status: 500,
+        }
+      )
+    }
 
     console.log('Returning success response.')
     console.log('========== REGISTER END ==========')
