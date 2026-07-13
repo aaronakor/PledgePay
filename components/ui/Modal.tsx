@@ -69,10 +69,11 @@ export function Modal({
         <p className={styles.body}>{body}</p>
         <div className={styles.actions}>
           <Button
-            variant="ghost"
+            variant="secondary"
             fullWidth
             onClick={onClose}
             disabled={loading}
+            className={styles.cancelButton}
           >
             {cancelLabel}
           </Button>
@@ -81,6 +82,7 @@ export function Modal({
             fullWidth
             loading={loading}
             onClick={onConfirm}
+            className={confirmVariant === 'danger' ? styles.confirmDangerButton : undefined}
           >
             {confirmLabel}
           </Button>
