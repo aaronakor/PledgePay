@@ -123,6 +123,11 @@ function AuthForm() {
         redirect: false,
       })
 
+      console.log('[LOGIN RESULT]', result)
+      console.log('[LOGIN ERROR]', result?.error)
+      console.log('[LOGIN OK]', result?.ok)
+      console.log('[LOGIN URL]', result?.url)
+
       if (result?.error) {
         setError('Invalid email or password.')
         return
