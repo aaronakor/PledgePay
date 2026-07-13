@@ -1,20 +1,18 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
-import { ArrowLeft, Settings } from 'lucide-react'
+import { ArrowLeft, User, Landmark, Bell, HelpCircle, LogOut, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { ProfileReputationCard } from '@/components/home/ProfileReputationCard'
 import { signOut } from 'next-auth/react'
+import { ProfileReputationCard } from '@/components/home/ProfileReputationCard'
+import { Modal } from '@/components/ui/Modal'
+import styles from './Profile.module.css'
 
 interface Profile {
   fullName: string
   email: string
   phoneNumber: string
+  profilePhoto: string | null
   bankName: string | null
   accountNumber: string | null
   accountName: string | null
@@ -22,16 +20,10 @@ interface Profile {
 }
 
 export default function ProfilePage() {
-  const router = useRouter()
-  const { data: session, update } = useSession()
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
-  const [bankName, setBankName] = useState('')
-  const [accountNumber, setAccountNumber] = useState('')
-  const [accountName, setAccountName] = useState('')
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
+  const [loggingOut, setLoggingOut] = useState(false)
 
   useEffect(() => {
     async function fetchProfile() {
@@ -40,11 +32,8 @@ export default function ProfilePage() {
         if (!res.ok) throw new Error('Failed to load profile')
         const data = await res.json()
         setProfile(data)
-        setBankName(data.bankName ?? '')
-        setAccountNumber(data.accountNumber ?? '')
-        setAccountName(data.accountName ?? '')
       } catch {
-        setError('Could not load profile.')
+        // silently handle error
       } finally {
         setLoading(false)
       }
@@ -52,122 +41,100 @@ export default function ProfilePage() {
     fetchProfile()
   }, [])
 
-  async function handleSave(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
-    setSuccess(null)
-    setSaving(true)
-
-    try {
-      const res = await fetch('/api/profile', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          bankName,
-          accountNumber,
-          accountName,
-        }),
-      })
-
-      if (!res.ok) {
-        const data = await res.json()
-        setError(data.error || 'Failed to save.')
-        return
-      }
-
-      setSuccess('Bank details saved.')
-      await update()
-    } catch {
-      setError('Something went wrong.')
-    } finally {
-      setSaving(false)
-    }
+  async function handleLogout() {
+    setLoggingOut(true)
+    await signOut({ callbackUrl: '/' })
   }
 
   if (loading) {
     return (
-      <div className="flex flex-col gap-4 animate-pulse">
-        <div className="h-6 w-32 bg-border rounded" />
-        <div className="h-48 bg-white rounded-xl shadow-md" />
+      <div className={styles.skeletonPage}>
+        <div className={styles.skeletonHeader}>
+          <div className={styles.skeletonTitle} />
+        </div>
+        <div className={styles.skeletonCard} />
+        <div className={styles.skeletonRows}>
+          <div className={styles.skeletonRow} />
+          <div className={styles.skeletonRow} />
+          <div className={styles.skeletonRow} />
+          <div className={styles.skeletonRow} />
+          <div className={styles.skeletonRow} />
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-3">
-        <Link
-          href="/home"
-          className="text-ink-muted hover:text-ink transition-colors"
-        >
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <Link href="/home" className={styles.backLink} aria-label="Back to home">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-2xl font-serif text-ink">Profile</h1>
-      </div>
+        <h1 className={styles.pageTitle}>Profile</h1>
+      </header>
 
       {profile && <ProfileReputationCard score={profile.reputationScore} />}
 
-      <Card>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-semibold text-ink">
-            Bank Details
-          </h2>
-          <Link
-            href="/settings"
-            className="text-ink-muted hover:text-primary-700 transition-colors"
-            aria-label="Settings"
-          >
-            <Settings className="w-5 h-5" />
-          </Link>
-        </div>
-        <p className="text-xs text-ink-muted mb-4">
-          This is where repayments will be sent. Only you can see this
-          information.
-        </p>
+      <span className={styles.sectionLabel}>Account</span>
 
-        <form onSubmit={handleSave} className="flex flex-col gap-4">
-          <Input
-            label="Bank Name"
-            placeholder="e.g. GTBank"
-            value={bankName}
-            onChange={(e) => setBankName(e.target.value)}
-            required
-          />
-          <Input
-            label="Account Number"
-            placeholder="0123456789"
-            value={accountNumber}
-            onChange={(e) => setAccountNumber(e.target.value)}
-            required
-          />
-          <Input
-            label="Account Name"
-            placeholder="Full account name"
-            value={accountName}
-            onChange={(e) => setAccountName(e.target.value)}
-            required
-          />
+      <div className={styles.actionsCard}>
+        <Link href="/profile/edit" className={styles.actionRow}>
+          <User className={styles.actionIcon} />
+          <div className={styles.actionContent}>
+            <span className={styles.actionTitle}>Edit Profile</span>
+            <span className={styles.actionSubtitle}>Name, photo, phone number</span>
+          </div>
+          <ChevronRight className={styles.actionChevron} />
+        </Link>
 
-          {error && <p className="text-sm text-error">{error}</p>}
-          {success && (
-            <p className="text-sm text-success">{success}</p>
-          )}
+        <Link href="/profile/bank" className={styles.actionRow}>
+          <Landmark className={styles.actionIcon} />
+          <div className={styles.actionContent}>
+            <span className={styles.actionTitle}>Bank Details</span>
+            <span className={styles.actionSubtitle}>Repayment account information</span>
+          </div>
+          <ChevronRight className={styles.actionChevron} />
+        </Link>
 
-          <Button type="submit" loading={saving} fullWidth>
-            Save Bank Details
-          </Button>
-        </form>
-      </Card>
+        <Link href="/profile/notifications" className={styles.actionRow}>
+          <Bell className={styles.actionIcon} />
+          <div className={styles.actionContent}>
+            <span className={styles.actionTitle}>Notifications</span>
+            <span className={styles.actionSubtitle}>Manage alert preferences</span>
+          </div>
+          <ChevronRight className={styles.actionChevron} />
+        </Link>
 
-      <div className="flex flex-col gap-3 mt-4">
-        <Button
-          variant="ghost"
-          fullWidth
-          onClick={() => signOut({ callbackUrl: '/' })}
+        <Link href="/profile/faq" className={styles.actionRow}>
+          <HelpCircle className={styles.actionIcon} />
+          <div className={styles.actionContent}>
+            <span className={styles.actionTitle}>FAQs</span>
+            <span className={styles.actionSubtitle}>Get help and learn more</span>
+          </div>
+          <ChevronRight className={styles.actionChevron} />
+        </Link>
+
+        <button
+          type="button"
+          className={styles.logoutRow}
+          onClick={() => setShowLogoutModal(true)}
         >
-          Sign Out
-        </Button>
+          <LogOut className={styles.logoutIcon} />
+          <span className={styles.logoutTitle}>Logout</span>
+        </button>
       </div>
+
+      <Modal
+        open={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={handleLogout}
+        title="Sign Out?"
+        body="You will be signed out of your account and returned to the welcome screen."
+        cancelLabel="Cancel"
+        confirmLabel="Sign Out"
+        confirmVariant="danger"
+        loading={loggingOut}
+      />
     </div>
   )
 }

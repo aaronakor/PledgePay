@@ -1,0 +1,66 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: var(--space-6);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.overlayOpen {
+  opacity: 1;
+}
+
+.dialog {
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  max-width: 360px;
+  width: 100%;
+  padding: var(--space-6);
+  transform: scale(0.95) translateY(8px);
+  transition: transform 0.2s ease;
+}
+
+.dialogOpen {
+  transform: scale(1) translateY(0);
+}
+
+.title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: var(--text-xl);
+  color: var(--color-ink);
+  margin: 0 0 var(--space-2) 0;
+  line-height: 1.2;
+}
+
+.body {
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+  line-height: 1.6;
+  margin: 0 0 var(--space-6) 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    transform: scale(1) translateY(0);
+  }
+}

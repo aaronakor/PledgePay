@@ -8,6 +8,9 @@ const UpdateProfileSchema = z.object({
   bankName: z.string().min(1).optional(),
   accountNumber: z.string().min(10).optional(),
   accountName: z.string().min(1).optional(),
+  fullName: z.string().min(1).optional(),
+  phoneNumber: z.string().min(1).optional(),
+  profilePhoto: z.string().optional(),
 })
 
 export async function GET() {
@@ -24,6 +27,7 @@ export async function GET() {
         fullName: true,
         email: true,
         phoneNumber: true,
+        profilePhoto: true,
         bankName: true,
         accountNumber: true,
         accountName: true,
@@ -84,6 +88,9 @@ export async function PATCH(req: NextRequest) {
         bankName: true,
         accountNumber: true,
         accountName: true,
+        fullName: true,
+        phoneNumber: true,
+        profilePhoto: true,
         profileComplete: true,
       },
     })

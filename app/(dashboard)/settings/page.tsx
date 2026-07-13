@@ -77,7 +77,7 @@ export default function SettingsPage() {
             Your profile is set up and ready.
           </p>
           <Link
-            href="/profile"
+            href="/profile/bank"
             className="text-sm text-primary font-medium mt-3 inline-block hover:underline"
           >
             Edit Bank Details
